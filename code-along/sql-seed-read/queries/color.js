@@ -31,4 +31,35 @@ const createColor = async (color) => {
   }
 };
 
-module.exports = { getAllColors, getColor, createColor };
+const deleteColor = async (id) => {
+  try {
+    const deletedColor = await db.one(
+      "DELETE FROM colors WHERE id = $1 RETURNING *",
+      id
+    );
+    return deletedColor;
+  } catch (error) {
+    return error;
+  }
+};
+
+const updateColor = async (id, color) => {
+  const { name, is_favorite } = color;
+  try {
+    const updatedColor = await db.one(
+      "UPDATE colors SET name = $1, is_favorite = $2 WHERE id = $3 RETURNING *",
+      [name, is_favorite, id]
+    );
+    return updatedColor;
+  } catch (error) {
+    return error;
+  }
+};
+
+module.exports = {
+  getAllColors,
+  getColor,
+  createColor,
+  deleteColor,
+  updateColor,
+};
